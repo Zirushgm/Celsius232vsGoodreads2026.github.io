@@ -1,8 +1,9 @@
 {
-  "name": "Analizador GoodReads - Autores2026",
-  "short_name": "Autores2026",
-  "description": "Compara tu biblioteca de GoodReads con la lista de autores 2026",
+  "name": "Celsius232 vs GoodReads 2026",
+  "short_name": "Celsius232",
+  "description": "Compara tu biblioteca de GoodReads con la lista de autores Celsius 2026",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#f5f5f5",
   "theme_color": "#4CAF50",
