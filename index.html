@@ -124,8 +124,7 @@
     </style>
 </head>
 <body>
-    <h1>📚 GoodReads vs Celsius232 2026</h1>
-    <h3 style="text-align: center; color: #666; font-weight: normal; margin-top: -10px;">Compara tu biblioteca GoodReads con los autores Celsius232 - Version 2026</h3>
+    <h1>📚 Analizador GoodReads - Autores2026</h1>
     
     <div class="upload-section">
         <p>Sube tu archivo CSV exportado desde GoodReads</p>
@@ -156,19 +155,35 @@
 
     <script>
         let autoresNormalizados = {};
+        const STORAGE_KEY = 'autoresCelsius232';
+        const VERSION_KEY = 'autoresCelsius232_version';
 
         async function cargarAutores() {
-            try {
-                const response = await fetch('Autores2026.json');
-                const autores2026 = await response.json();
-                
-                autores2026.forEach(autor => {
+            const storedVersion = localStorage.getItem(VERSION_KEY);
+            const storedData = localStorage.getItem(STORAGE_KEY);
+
+            console.log('Descargando lista de autores');
+            const response = await fetch('Autores2026.json');
+            const data = await response.json();
+            
+            const versionRemota = data.version || 1;
+            
+            if (storedData && storedVersion && parseInt(storedVersion) >= versionRemota) {
+                console.log('Cargando desde localStorage (versión actualizada)');
+                const autoresGuardados = JSON.parse(storedData);
+                autoresGuardados.forEach(autor => {
                     autoresNormalizados[autor.toLowerCase().trim()] = autor;
                 });
-            } catch (error) {
-                console.error('Error cargando autores:', error);
-                document.getElementById('fileName').textContent = 'Error: No se pudo cargar Autores2026.json';
+                return;
             }
+
+            console.log('Guardando nueva versión');
+            data.autores.forEach(autor => {
+                autoresNormalizados[autor.toLowerCase().trim()] = autor;
+            });
+            
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data.autores));
+            localStorage.setItem(VERSION_KEY, versionRemota);
         }
 
         function normalizarAutor(autor) {
@@ -316,9 +331,10 @@
             document.getElementById('resultados').style.display = 'block';
         }
 
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js');
-        }
+        // Service worker solo funciona con HTTP/HTTPS
+        // if ('serviceWorker' in navigator) {
+        //     navigator.serviceWorker.register('service-worker.js');
+        // }
     </script>
 </body>
 </html>
