@@ -187,9 +187,14 @@
         }
 
         function normalizarAutor(autor) {
-            if (!autor) return null;
-            return autor.toLowerCase().trim();
-        }
+    if (!autor) return null;
+
+    return autor
+        .replace(/[\u00A0\t\r\n]+/g, " ") // Espacios especiales → espacio normal
+        .replace(/\s+/g, " ")            // Múltiples espacios → uno solo
+        .trim()                          // Elimina espacios al principio y al final
+        .toLowerCase();
+}
 
         cargarAutores();
 
